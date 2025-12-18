@@ -3,15 +3,17 @@ package ru.education_services.stellarburgers.page_object_model;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import ru.education_services.stellarburgers.general_interface.GeneralMethods;
 
-import java.util.List;
-import java.util.Locale;
+import java.time.Duration;
+
+
 
 public class MainPage {
     private WebDriver driver;
-
     // Кнопка "Войти в аккаунт"
     private By logInToYourAccount = By.xpath(("//main//button[text()='Войти в аккаунт']"));
     // Заголовок Собери Бургер
@@ -19,13 +21,12 @@ public class MainPage {
     // Кнопка "Личный кабинет" в хедере страницы
     private By personalAccount = By.xpath("//header//p[text()='Личный Кабинет']");
     // Кнопка раздела "Булки"
-    private By bunButton = By.xpath("//main//span[text()='Булки']");
+    private By bunButton = By.xpath("//main//span[text()='Булки']/parent::div");
     // Кнопка раздела "Соусы"
-    private By saucesButton = By.xpath("//main//span[text()='Соусы']");
+    private By saucesButton = By.xpath("//main//span[text()='Соусы']/parent::div");
     // Кнопка раздела "Начинки"
-    private By fillingButton = By.xpath("//main//span[text()='Начинки']");
-    // Блок ингредиентов
-    private By ingredientsBlock = By.xpath("//main/section//ul[@class='BurgerIngredients_ingredients__list__2A-mT']");
+    private By fillingButton = By.xpath("//main//span[text()='Начинки']/parent::div");
+
 
     public MainPage(WebDriver driver) {
         this.driver = driver;
@@ -68,24 +69,24 @@ public class MainPage {
     @Step("Осуществлен ли переход к разделу Булки/Соусы/Начинка")
     public boolean isOneOfTabBunSaucesFillingDisplayed(String tab) {
         tab = tab.toLowerCase();
-        // Получаем весь список веб элементов
-        List<WebElement> ingredients = driver.findElements(ingredientsBlock);
-        WebElement bunList = ingredients.get(0);
-        WebElement saucesList = ingredients.get(1);
-        WebElement fillingList = ingredients.get(2);
         boolean result = false;
         switch (tab) {
             case "булки":
                 clickOnBunButton();
-                result = bunList.isDisplayed();
+                // При клике на вкладку у элемента div появляется аттрибут класса current
+                // Нужно ждать пока появится этот аттрибут
+                result = new WebDriverWait(driver, Duration.ofSeconds(10))
+                        .until(ExpectedConditions.attributeContains(bunButton, "class", "current"));
                 break;
             case "соусы":
                 clickOnSaucesButton();
-                result = saucesList.isDisplayed();
+                result = new WebDriverWait(driver, Duration.ofSeconds(10))
+                        .until(ExpectedConditions.attributeContains(saucesButton, "class", "current"));
                 break;
             case "начинка":
                 clickOnFillingButton();
-                result = fillingList.isDisplayed();
+                result = new WebDriverWait(driver, Duration.ofSeconds(10))
+                        .until(ExpectedConditions.attributeContains(fillingButton, "class", "current"));
                 break;
             default:
                 throw new IllegalArgumentException("Неизвестная кнопка: " + tab);

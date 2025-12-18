@@ -3,7 +3,7 @@ package ru.education_services.stellarburgers.general_interface;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+
 
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -26,20 +26,19 @@ public interface GeneralMethods {
 
     }
 
-    static void openPage(String URL, By element, WebDriver driver) throws Exception {
+    static void openPage(String URL, String elementXpath, WebDriver driver) throws Exception {
         // Открыли браузер
         driver.get(URL);
         // Подождем и проверим что страница загрузилась
-        By byElement = element;
+        By byElement = By.xpath(elementXpath);
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(3));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(element));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(byElement));
 
         if (!driver.findElement(byElement).isDisplayed()) {
             throw new Exception("Страница регистрации загрузилась");
         }
     }
     static void registrationRequest(String email, String password, String name){
-
         registrationMap.put("email", email);
         registrationMap.put("password", password);
         registrationMap.put("name", name);

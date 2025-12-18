@@ -117,7 +117,7 @@ public class LoginTests {
     @ParameterizedTest(name = "Проверка авторизации [{index}]: {0}")
     // Делаю это для того, чтобы не плодить 3 одинаковых теста у которых меняется точка входа только
     @MethodSource("dataForTheForm")
-    public void loginTest(String pageName, String URL, By element) throws Exception {
+    public void loginTest(String pageName, String URL, String element) throws Exception {
         GeneralMethods.openPage(URL, element, driver);
         switch (URL) {
             case REGISTRATION_PAGE:
@@ -177,14 +177,10 @@ public class LoginTests {
     }
 
     private static Stream<Arguments> dataForTheForm() {
-        By registration = By.xpath("//h2[text()='Регистрация']");
-        By burgerHeader = By.xpath("//main/section[@class='BurgerIngredients_ingredients__1N8v2']");
-        By forgotPasswordHeader = By.xpath("//main//h2");
-        return /*Stream.of(
-                Arguments.of(REGISTRATION_PAGE, registration,registerPage),
-                Arguments.of(MAIN_PAGE, burgerHeader,mainPage),
-                Arguments.of(FORGOT_PASSWORD_PAGE, forgotPasswordHeader,forgotPasswordPage));*/
-                Stream.of(
+        String registration = "//h2[text()='Регистрация']";
+        String burgerHeader = "//main/section[@class='BurgerIngredients_ingredients__1N8v2']";
+        String forgotPasswordHeader = "//main//h2";
+        return Stream.of(
                         Arguments.of("с страницы 'регистрации'", REGISTRATION_PAGE, registration),
                         Arguments.of("с 'Главной' страницы ", MAIN_PAGE, burgerHeader),
                         Arguments.of("с страницы 'Забыли пароль'", FORGOT_PASSWORD_PAGE, forgotPasswordHeader));
