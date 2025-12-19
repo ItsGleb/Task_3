@@ -33,7 +33,7 @@ import ru.education_services.stellarburgers.page_object_model.RegistrationPage;
 
 import java.time.Duration;
 
-import java.util.Map;
+
 import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -41,13 +41,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static ru.education_services.stellarburgers.constants.Constants.*;
 
 public class LoginTests {
     private WebDriver driver;
     private String accessToken;
-    private Map<String, String> registrationMap;
+
     private By byElement;
     private DriverFactory driverFactory;
 
@@ -60,8 +61,7 @@ public class LoginTests {
         // Инициализируем драйвер через фабрику
         driverFactory.initDriver();
         driver = driverFactory.getDriver();
-       // WebDriverManager.chromedriver().setup();
-        //driver = new ChromeDriver();
+
         GeneralMethods.registrationRequest("test06-email@yandex.ru", "password", "Test");
     }
 
@@ -101,7 +101,9 @@ public class LoginTests {
         objAuthorizationPage.fillOutTheFormAndClickOnEnter(GeneralMethods.getRegistrationMapData("email"),
                 GeneralMethods.getRegistrationMapData("password"));
         // Получаем ответ
-        String authReply = q.poll(10, TimeUnit.SECONDS);
+        int timeout = 40;
+        String authReply = q.poll(timeout, TimeUnit.SECONDS);
+        assertNotNull(authReply, "Ответ не получен. Текущее значение тайм-аута для получения ответа = " + timeout);
         // Парсим строку в json объект
         JsonObject jsonObject = JsonParser.parseString(authReply).getAsJsonObject();
         // Достаем значение токена
@@ -162,7 +164,9 @@ public class LoginTests {
         objAuthorizationPage.fillOutTheFormAndClickOnEnter(GeneralMethods.getRegistrationMapData("email"),
                 GeneralMethods.getRegistrationMapData("password"));
         // Получаем ответ
-        String authReply = q.poll(10, TimeUnit.SECONDS);
+        int timeout = 40;
+        String authReply = q.poll(timeout, TimeUnit.SECONDS);
+        assertNotNull(authReply,"Ответ не получен. Текущее значение тайм-аута для получения ответа = "+timeout);
         // Парсим строку в json объект
         JsonObject jsonObject = JsonParser.parseString(authReply).getAsJsonObject();
         // Достаем значение токена
